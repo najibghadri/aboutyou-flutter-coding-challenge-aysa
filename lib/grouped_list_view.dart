@@ -22,7 +22,7 @@ class GroupedListView<I, G> extends HookWidget {
 
   final List<Widget>? preceedingWidgets;
 
-  final List<Widget>? successiveWidgets;
+  final List<Widget>? succeedingWidgets;
 
   const GroupedListView({
     required this.items,
@@ -30,7 +30,7 @@ class GroupedListView<I, G> extends HookWidget {
     required this.groupHeaderBuilder,
     required this.itemBuilder,
     this.preceedingWidgets,
-    this.successiveWidgets,
+    this.succeedingWidgets,
     this.groupComparator,
     this.itemComparator,
     this.needsSorting = true,
@@ -41,12 +41,12 @@ class GroupedListView<I, G> extends HookWidget {
     return i.isEven;
   }
 
-  _isEqual(G g1, G? g2) {
-    if (g2 == null) return false;
+  _groupsNotEqual(G g1, G? g2) {
+    if (g2 == null) return true;
     if (groupComparator != null) {
-      return groupComparator!(g1, g2) == 0;
+      return groupComparator!(g1, g2) != 0;
     } else if (g1 is Comparable) {
-      return g1.compareTo(g2) == 0;
+      return g1.compareTo(g2) != 0;
     }
   }
 
@@ -59,7 +59,7 @@ class GroupedListView<I, G> extends HookWidget {
         if (items.isEmpty) {
           return;
         }
-        // Sort all items
+        // Sort all items if needed
         if (needsSorting) {
           items.sort((i1, i2) {
             if (itemComparator != null) {
@@ -72,7 +72,6 @@ class GroupedListView<I, G> extends HookWidget {
           });
         }
 
-        // sortedGroups.value = _sortedGroups;
         sortedItems.value = items;
       });
     }, [items]);
@@ -97,7 +96,7 @@ class GroupedListView<I, G> extends HookWidget {
                 var previousGroup = itemindex == 0
                     ? null
                     : mapToGroup(sortedItems.value[itemindex - 1]);
-                if (_isEqual(currentGroup, previousGroup)) {
+                if (_groupsNotEqual(currentGroup, previousGroup)) {
                   return groupHeaderBuilder(context, currentGroup, item);
                 } else {
                   return const SizedBox.shrink();
@@ -109,11 +108,11 @@ class GroupedListView<I, G> extends HookWidget {
             childCount: sortedItems.value.length * 2,
           ),
         ),
-        ...(successiveWidgets == null
+        ...(succeedingWidgets == null
             ? []
             : [
                 SliverList(
-                  delegate: SliverChildListDelegate(successiveWidgets!),
+                  delegate: SliverChildListDelegate(succeedingWidgets!),
                 ),
               ]),
       ],
