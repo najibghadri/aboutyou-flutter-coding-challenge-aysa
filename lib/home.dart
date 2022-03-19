@@ -12,8 +12,9 @@ class HomePage extends HookWidget {
     final filteredContacts = useState(<String>[]);
 
     useEffect(() {
-      // To use a short list uncomment the following line:
-      // contacts = contacts.sublist(0, 50);
+      // To use huge list of 5000 users comment out the following line:
+      contacts = contacts.sublist(0, 50);
+
       contacts.sort();
       sortedContacts.value = contacts;
       filteredContacts.value = contacts;
