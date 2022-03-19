@@ -55,12 +55,11 @@ class GroupedListView<I, G> extends HookWidget {
     final sortedItems = useState<List<I>>([]);
 
     useEffect(() {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        if (items.isEmpty) {
-          return;
-        }
-        // Sort all items if needed
-        if (needsSorting) {
+      // Sort all items if needed. If the list is filtered for search f.ex.
+      // this will still re sort the new items list even if it's already sorted.
+      // In that case it's better to pass a sorted [items] list and needsSorting=false
+      if (needsSorting) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
           items.sort((i1, i2) {
             if (itemComparator != null) {
               return itemComparator!(i1, i2);
@@ -70,11 +69,13 @@ class GroupedListView<I, G> extends HookWidget {
               return 0;
             }
           });
-        }
-
-        sortedItems.value = items;
-      });
+          sortedItems.value = items;
+        });
+      }
     }, [items]);
+
+    // If the received [items] list is already sorted we use it directly, otherwise we use the sorted list
+    final itemsList = needsSorting ? sortedItems.value : items;
 
     return CustomScrollView(
       slivers: [
@@ -89,13 +90,13 @@ class GroupedListView<I, G> extends HookWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final itemindex = index ~/ 2;
-              final item = sortedItems.value[itemindex];
+              final item = itemsList[itemindex];
 
               if (_isGroupHeaderIndex(index)) {
                 var currentGroup = mapToGroup(item);
                 var previousGroup = itemindex == 0
                     ? null
-                    : mapToGroup(sortedItems.value[itemindex - 1]);
+                    : mapToGroup(itemsList[itemindex - 1]);
                 if (_groupsNotEqual(currentGroup, previousGroup)) {
                   return groupHeaderBuilder(context, currentGroup, item);
                 } else {
@@ -105,7 +106,7 @@ class GroupedListView<I, G> extends HookWidget {
                 return itemBuilder(context, item, itemindex);
               }
             },
-            childCount: sortedItems.value.length * 2,
+            childCount: itemsList.length * 2,
           ),
         ),
         ...(succeedingWidgets == null
