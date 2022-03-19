@@ -1,7 +1,9 @@
-import 'package:aboutyou/contacts.dart';
-import 'package:aboutyou/grouped_list_view.dart';
+import 'package:aboutyou/data/contacts.dart';
+import 'package:aboutyou/ui/contact_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'grouped_list_view.dart';
 
 class HomePage extends HookWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -83,12 +85,14 @@ class HomePage extends HookWidget {
             },
             itemBuilder: (BuildContext context, String contact, int index) {
               return ListTile(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(ContactDetailsPage.route(index));
+                },
                 title: Text(contact),
                 leading: CircleAvatar(
                   backgroundColor: Colors.grey.shade700,
                   backgroundImage: NetworkImage(
-                    avatars[index],
+                    avatars[index] + '?size=100x100',
                   ),
                 ),
               );

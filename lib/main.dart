@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:aboutyou/home.dart';
+import 'package:aboutyou/ui/home_page.dart';
 import 'package:aboutyou/theme.dart';
 
 void main() {
