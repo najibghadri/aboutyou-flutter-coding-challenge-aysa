@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final aboutYouTheme = ThemeData(
-  primarySwatch: Colors.blue,
+  primarySwatch: Colors.green,
   inputDecorationTheme: const InputDecorationTheme(
     border: InputBorder.none,
     focusedBorder: InputBorder.none,
