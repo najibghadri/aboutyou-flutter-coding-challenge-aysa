@@ -1,11 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+/// Renders a list view that groups items with a generic api.
+/// Allows for inserting widgets before and after the list view.
 class GroupedListView<I, G> extends HookWidget {
   /// Items that will be rendered by [itemBuilder]
   final List<I> items;
 
-  /// This function maps an item to its group. It iss called for each item. When
+  /// This function maps an item to its group. It is called for each item. When
   /// the group is equal for two items, they belong in the same group.
   final G Function(I item) mapToGroup;
 
