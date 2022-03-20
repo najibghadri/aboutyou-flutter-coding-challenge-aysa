@@ -2,7 +2,7 @@
 
 https://user-images.githubusercontent.com/11639734/159179579-d5452bc5-769b-48ad-b12c-a9e976d81ee6.mov
 
-`GroupedListView` is a generic grouped list view with a well-documented easy to use api:
+`GroupedListView` renders a list view that groups items with a generic and easy-to-use api. Allows for inserting widgets before and after the list view.
 
 ### Parameters:
 | Name | Description | Required | Default value |
