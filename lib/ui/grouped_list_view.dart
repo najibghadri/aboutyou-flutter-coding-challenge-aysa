@@ -5,23 +5,33 @@ class GroupedListView<I, G> extends HookWidget {
   /// Items that will be rendered by [itemBuilder]
   final List<I> items;
 
-  /// This function maps an item to it's group. It's called for each item, when
-  /// the group is equal for two items, they belong in the same group
+  /// This function maps an item to its group. It iss called for each item. When
+  /// the group is equal for two items, they belong in the same group.
   final G Function(I item) mapToGroup;
 
+  /// Optional: Needed if Group type is not a Comparable.
   final int Function(G g1, G g2)? groupComparator;
 
+  /// Optional: Needed if [needsSorting] = true and Item type is not a Comparable.
   final int Function(I i1, I i2)? itemComparator;
 
+  /// Called when building the header of a group.
   final Widget Function(BuildContext context, G group, I firstItem)
       groupHeaderBuilder;
 
+  /// Called when building an item.
   final Widget Function(BuildContext context, I item, int index) itemBuilder;
 
+  /// Sort the provided [items] or not. If the [items] list is modified frequently,
+  /// but keeps sorting (filtered for search for example) then it's better to pass
+  /// [items] already sorted and set [needsSorting] to false to avoid unnecessary sorts
+  /// which decrease performance.
   final bool needsSorting;
 
+  /// Optional. List of widgets to insert before the grouped list view
   final List<Widget>? preceedingWidgets;
 
+  /// Optional. List of widgets to insert after the grouped list view
   final List<Widget>? succeedingWidgets;
 
   const GroupedListView({
@@ -55,9 +65,6 @@ class GroupedListView<I, G> extends HookWidget {
     final sortedItems = useState<List<I>>([]);
 
     useEffect(() {
-      // Sort all items if needed. If the list is filtered for search f.ex.
-      // this will still re sort the new items list even if it's already sorted.
-      // In that case it's better to pass a sorted [items] list and needsSorting=false
       if (needsSorting) {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           items.sort((i1, i2) {
