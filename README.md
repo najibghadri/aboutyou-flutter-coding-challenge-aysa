@@ -39,3 +39,5 @@ https://user-images.githubusercontent.com/11639734/159179579-d5452bc5-769b-48ad-
 - Implementing a scrollToIndex api would be interesting
 - Adding a draggable scrollbar would improve UX greatly, like https://pub.dev/packages/draggable_scrollbar
 - In https://capsulechat.com/ I have implemented a similar component for listing messages and a group header for each new day. I've also used `CustomScrollView` but there is preprocessing to an intermediary list. Additionally I implemented a `onReachingTop` api using `ScrollNotification` that helps in pagination loading and also `onFirstItemIndexChanged` which returns the index of the items that's currently visible on the top of the scrollview's viewport. This helps in showing a fixed floating header 👍. It uses `findRenderObject` and `localToGlobal` apis.
+
+## About scrollToIndex api
