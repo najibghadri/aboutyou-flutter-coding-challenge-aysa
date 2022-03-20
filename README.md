@@ -30,8 +30,8 @@ https://user-images.githubusercontent.com/11639734/159179579-d5452bc5-769b-48ad-
 - I created a dataset of 5000 names and avatar urls. This can be tested by uncommenting [home_page.dart#L18](https://github.com/najibghadri/aboutyou-flutter-coding-challenge-aysa/blob/coding-challenge/lib/ui/home_page.dart#L18)
 - Using Material components I made a HomePage that uses stock ListTiles, TextField and IconButton.
 - It is also a `HookWidget`:
-- it uses a useEffect to sort the large (or small) list of contacts instead of letting `GroupedListView` sort it. 
-- It uses useState, useFocusNode, useTextEditingController and useEffect to implement an interactive search. When the TextField in AppBar is focused then `searchIsActive` is true and the additional button widgets aren't provided to `GroupedListView` and the list is filtered with the value of the search text controller.
+  - it uses a useEffect to sort the large (or small) list of contacts instead of letting `GroupedListView` sort it. 
+  - it uses useState, useFocusNode, useTextEditingController and useEffect to implement an interactive search. When the TextField in AppBar is focused then `searchIsActive` is true and the additional button widgets aren't provided to `GroupedListView` and the list is filtered with the value of the search text controller.
 - When the value of the text field is changed then the list is filtered, but not sorted again, hence keeping good performance.
 - A cancel button is added to the appbar in active search that clears the text, unfocuses and deactives search.
 
