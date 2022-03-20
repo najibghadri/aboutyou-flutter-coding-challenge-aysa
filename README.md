@@ -27,7 +27,7 @@ https://user-images.githubusercontent.com/11639734/159179579-d5452bc5-769b-48ad-
 - There is no preprocessing of the `items` list, meaning there is no itermediary list that combines group headers and items. The list is generated on-the-fly with a trick: in reality what's rendered is a list twice as large as `items`, where for even indices either a group header is built or a zero sized `SizedBox.shrink` depending on whether there is a difference between the current and previous item's group, and for odd indices the actual item's builder is called.
 
 ### Testing
-- I created a dataset of 5000 names and avatar urls. This can be tested by uncommenting [home_page.dart#L18](https://github.com/najibghadri/aboutyou-flutter-coding-challenge-aysa/blob/coding-challenge/lib/ui/home_page.dart#L18)
+- I created a dataset of 5000 names and avatar urls. By default a sublist of 50 contacts is used. The large list can be tested by uncommenting [home_page.dart#L18](https://github.com/najibghadri/aboutyou-flutter-coding-challenge-aysa/blob/coding-challenge/lib/ui/home_page.dart#L18)
 - Using Material components I made a HomePage that uses stock ListTiles, TextField and IconButton.
 - It is also a `HookWidget`:
   - it uses a useEffect to sort the large (or small) list of contacts instead of letting `GroupedListView` sort it. 
