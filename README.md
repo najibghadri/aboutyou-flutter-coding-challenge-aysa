@@ -41,3 +41,10 @@ https://user-images.githubusercontent.com/11639734/159179579-d5452bc5-769b-48ad-
 - In https://capsulechat.com/ I have implemented a similar component for listing messages and a group header for each new day. I've also used `CustomScrollView` but there is preprocessing to an intermediary list. Additionally I implemented a `onReachingTop` api using `ScrollNotification` that helps in pagination loading and also `onFirstItemIndexChanged` which returns the index of the items that's currently visible on the top of the scrollview's viewport. This helps in showing a fixed floating header of the current day 👍. It uses `findRenderObject` and `localToGlobal` apis.
 
 ## About scrollToIndex api
+
+- In short a scrollToIndex api for Flutter's ListView isn't possible because the height of each list items isn't known before actually rendering them. Since ListView's good performance comes from not rendering items that aren't visible, it won't know the height of all items.
+- This was actually a long conversation in this issue: https://github.com/flutter/flutter/issues/12319. The community missed this feature as it was present in Android and iOS Swift. The request wasn't implemented into ListView because the pixel based api conflicts with the index based api.
+- Workarounds:
+  - If the height of the items is known (for example in a contacts list, where each ListTile has a fixed height) we could use ListView's (ScrollableController's) jumpTo(pixelOffset) or animateTo(pixelOffset) methods, as such: https://stackoverflow.com/a/58435822/6585695
+  - If the height is not fixed, then ListView's scrollController won't work. In that case one of the provided soltions to the issue above will work, such as
+  - https://pub.dev/packages/indexed_list_view or https://pub.dev/packages/scrollable_positioned_list. Both of these use rendering tricks. `ScrollablePositionedList` exposes a `itemScrollController` which has jumpTo(index) and scrollTo(index) methods. Looking at the implementation we can see that `jumpTo` simply renders the items near that index while `scrollTo` also uses a secondary Sliver list.
