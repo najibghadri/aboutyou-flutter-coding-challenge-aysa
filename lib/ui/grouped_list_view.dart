@@ -81,7 +81,7 @@ class GroupedListView<I, G> extends HookWidget {
           sortedItems.value = items;
         });
       }
-    }, [items]);
+    }, [items, needsSorting]);
 
     // If the received [items] list is already sorted we use it directly, otherwise we use the sorted list
     final itemsList = needsSorting ? sortedItems.value : items;
@@ -102,8 +102,8 @@ class GroupedListView<I, G> extends HookWidget {
               final item = itemsList[itemindex];
 
               if (_isGroupHeaderIndex(index)) {
-                var currentGroup = mapToGroup(item);
-                var previousGroup = itemindex == 0
+                final currentGroup = mapToGroup(item);
+                final previousGroup = itemindex == 0
                     ? null
                     : mapToGroup(itemsList[itemindex - 1]);
                 if (_groupsNotEqual(currentGroup, previousGroup)) {
