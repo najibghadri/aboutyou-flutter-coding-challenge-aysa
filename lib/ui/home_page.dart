@@ -81,7 +81,11 @@ class HomePage extends HookWidget {
                   Navigator.of(context).push(ContactDetailsPage.route(contact));
                 },
                 onPinTap: () {
-                  contactsNotifier.pinContact(contact);
+                  if (contact.isPinned) {
+                    contactsNotifier.unpinContact(contact);
+                  } else {
+                    contactsNotifier.pinContact(contact);
+                  }
                 },
               );
             },
@@ -121,7 +125,11 @@ class HomePage extends HookWidget {
                                         ContactDetailsPage.route(contact));
                                   },
                                   onPinTap: () {
-                                    contactsNotifier.unpinContact(contact);
+                                    if (contact.isPinned) {
+                                      contactsNotifier.unpinContact(contact);
+                                    } else {
+                                      contactsNotifier.pinContact(contact);
+                                    }
                                   },
                                 );
                               },
