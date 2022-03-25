@@ -67,13 +67,14 @@ class HomePage extends HookWidget {
       body: SafeArea(
         child: Scrollbar(
           radius: const Radius.circular(10),
-          child: GroupedListView<Contact, String>(
+          child: GroupedListView<int, String>(
             needsSorting: false,
-            items: contactStore.contacts,
-            mapToGroup: (contact) {
-              return contact.name.characters.first;
+            items: contactStore.sortedContactIds,
+            mapToGroup: (contactId) {
+              return contactStore.contacts[contactId]!.name.characters.first;
             },
-            itemBuilder: (BuildContext context, Contact contact, int index) {
+            itemBuilder: (BuildContext context, int contactId, int index) {
+              final contact = contactStore.contacts[contactId]!;
               return ContactListItem(
                 contact: contact,
                 isPinned: false,
@@ -106,11 +107,13 @@ class HomePage extends HookWidget {
                           const CircleAvatar(child: Icon(Icons.person_add)),
                     ),
                     const Divider(),
-                    ...(contactStore.pinnedContacts.isEmpty
+                    ...(contactStore.pinnedContactIds.isEmpty
                         ? []
                         : [
-                            ...contactStore.pinnedContacts.map(
-                              (contact) {
+                            ...contactStore.pinnedContactIds.map(
+                              (contactId) {
+                                final contact =
+                                    contactStore.contacts[contactId]!;
                                 return ContactListItem(
                                   contact: contact,
                                   isPinned: true,

@@ -11,41 +11,55 @@ class ContactsNotifier extends ValueNotifier<ContactStore> {
     /// Ideally the whole contacts list and pinned contacts list
     /// come from a local database through and API that allows for pinning/unpinning
 
-    /// To use huge list of 5000 users comment out the following line:
-    contacts = contacts.sublist(0, 50);
-    contacts.sort(((a, b) => a.name.compareTo(b.name)));
-
     value = ContactStore(
-      contacts: [...contacts],
-      pinnedContacts: const [],
+      contacts: contacts,
+      sortedContactIds: sortedContactIds,
+      pinnedContactIds: const [],
     );
   }
 
   void filterContacts(String? searchTerm) {
     if (searchTerm == null) {
-      value = value.copyWith(contacts: contacts);
+      value = value.copyWith(sortedContactIds: sortedContactIds);
       return;
     }
-    final filteredContacts = contacts
+    final filteredContacts = sortedContactIds
         .where(
-          (contact) =>
-              contact.name.toLowerCase().contains(searchTerm.toLowerCase()),
+          (contactId) => contacts[contactId]!
+              .name
+              .toLowerCase()
+              .contains(searchTerm.toLowerCase()),
         )
         .toList(growable: false);
 
-    value = value.copyWith(contacts: filteredContacts);
+    value = value.copyWith(sortedContactIds: filteredContacts);
   }
 
   // ideally this changes a local or cloud db as well as a local one optmisitically
   void pinContact(Contact contact) {
-    final pinnedContacts = [...value.pinnedContacts, contact];
-    value = value.copyWith(pinnedContacts: pinnedContacts);
+    final pinnedContactIds = [...value.pinnedContactIds, contact.id];
+
+    value.contacts.update(
+        contact.id,
+        (c) => Contact(
+            id: c.id, name: c.name, avatarUrl: c.avatarUrl, isPinned: true));
+    final newContacts = {...value.contacts};
+
+    value = value.copyWith(
+        pinnedContactIds: pinnedContactIds, contacts: newContacts);
   }
 
   void unpinContact(Contact contact) {
-    final pinnedContacts = [...value.pinnedContacts];
-    pinnedContacts.removeWhere((c) => c.id == contact.id);
+    final pinnedContactIds = [...value.pinnedContactIds];
+    pinnedContactIds.removeWhere((id) => id == contact.id);
 
-    value = value.copyWith(pinnedContacts: pinnedContacts);
+    value.contacts.update(
+        contact.id,
+        (c) => Contact(
+            id: c.id, name: c.name, avatarUrl: c.avatarUrl, isPinned: false));
+    final newContacts = {...value.contacts};
+
+    value = value.copyWith(
+        pinnedContactIds: pinnedContactIds, contacts: newContacts);
   }
 }

@@ -3,32 +3,38 @@ import 'package:equatable/equatable.dart';
 import 'contact.dart';
 
 class ContactStore extends Equatable {
-  final List<Contact> contacts;
-  final List<Contact> pinnedContacts;
+  final Map<int, Contact> contacts;
+  final List<int> sortedContactIds;
+  final List<int> pinnedContactIds;
 
   const ContactStore({
     required this.contacts,
-    required this.pinnedContacts,
+    required this.sortedContactIds,
+    required this.pinnedContactIds,
   });
 
   static const empty = ContactStore(
-    contacts: [],
-    pinnedContacts: [],
+    contacts: {},
+    sortedContactIds: [],
+    pinnedContactIds: [],
   );
 
   @override
   List<Object?> get props => [
         contacts,
-        pinnedContacts,
+        sortedContactIds,
+        pinnedContactIds,
       ];
 
   ContactStore copyWith({
-    List<Contact>? contacts,
-    List<Contact>? pinnedContacts,
+    Map<int, Contact>? contacts,
+    List<int>? sortedContactIds,
+    List<int>? pinnedContactIds,
   }) {
     return ContactStore(
       contacts: contacts ?? this.contacts,
-      pinnedContacts: pinnedContacts ?? this.pinnedContacts,
+      sortedContactIds: sortedContactIds ?? this.sortedContactIds,
+      pinnedContactIds: pinnedContactIds ?? this.pinnedContactIds,
     );
   }
 }
