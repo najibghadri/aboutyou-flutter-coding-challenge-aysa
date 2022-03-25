@@ -2,7 +2,6 @@ import 'package:aboutyou/ui/components/contact_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:aboutyou/logic/models/contact.dart';
 import 'package:aboutyou/logic/contacts_notifier.dart';
 import 'package:aboutyou/ui/contact_details_page.dart';
 
@@ -77,7 +76,7 @@ class HomePage extends HookWidget {
               final contact = contactStore.contacts[contactId]!;
               return ContactListItem(
                 contact: contact,
-                isPinned: false,
+                isPinned: contact.isPinned,
                 onTap: () {
                   Navigator.of(context).push(ContactDetailsPage.route(contact));
                 },
@@ -116,7 +115,7 @@ class HomePage extends HookWidget {
                                     contactStore.contacts[contactId]!;
                                 return ContactListItem(
                                   contact: contact,
-                                  isPinned: true,
+                                  isPinned: contact.isPinned,
                                   onTap: () {
                                     Navigator.of(context).push(
                                         ContactDetailsPage.route(contact));
