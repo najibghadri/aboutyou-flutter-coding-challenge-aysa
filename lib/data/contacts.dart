@@ -1,4 +1,8 @@
-var contacts = <String>[
+import 'package:collection/collection.dart';
+
+import '../logic/models/contact.dart';
+
+const contact_names = <String>[
   "Tripp Walter",
   "Kelvin Coleman",
   "Ali Meyers",
@@ -5001,7 +5005,7 @@ var contacts = <String>[
   "Demetrius Kelly",
 ];
 
-final avatars = [
+const contact_avatars = [
   'https://robohash.org/autmagnamiste.png',
   'https://robohash.org/nonnisicommodi.png',
   'https://robohash.org/sequiveniamdignissimos.png',
@@ -10003,3 +10007,10 @@ final avatars = [
   'https://robohash.org/etprovidentest.png',
   'https://robohash.org/culpautdebitis.png',
 ];
+
+var contacts = contact_names.foldIndexed<List<Contact>>(<Contact>[],
+    (index, contacts, name) {
+  contacts
+      .add(Contact(id: index, name: name, avatarUrl: contact_avatars[index]));
+  return contacts;
+});
