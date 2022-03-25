@@ -37,6 +37,9 @@ class ContactsNotifier extends ValueNotifier<ContactStore> {
 
   // ideally this changes a local or cloud db as well as a local one optmisitically
   void pinContact(Contact contact) {
+    if (contact.isPinned) {
+      return;
+    }
     final pinnedContactIds = [...value.pinnedContactIds, contact.id];
 
     value.contacts.update(
@@ -50,6 +53,9 @@ class ContactsNotifier extends ValueNotifier<ContactStore> {
   }
 
   void unpinContact(Contact contact) {
+    if (!contact.isPinned) {
+      return;
+    }
     final pinnedContactIds = [...value.pinnedContactIds];
     pinnedContactIds.removeWhere((id) => id == contact.id);
 
