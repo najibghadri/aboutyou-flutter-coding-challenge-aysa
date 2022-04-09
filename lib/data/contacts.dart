@@ -1,4 +1,8 @@
-var contacts = <String>[
+import 'package:collection/collection.dart';
+
+import '../logic/models/contact.dart';
+
+const contactNames = <String>[
   "Tripp Walter",
   "Kelvin Coleman",
   "Ali Meyers",
@@ -5001,7 +5005,7 @@ var contacts = <String>[
   "Demetrius Kelly",
 ];
 
-final avatars = [
+const contactAvatars = [
   'https://robohash.org/autmagnamiste.png',
   'https://robohash.org/nonnisicommodi.png',
   'https://robohash.org/sequiveniamdignissimos.png',
@@ -10003,3 +10007,19 @@ final avatars = [
   'https://robohash.org/etprovidentest.png',
   'https://robohash.org/culpautdebitis.png',
 ];
+
+var contacts =
+    contactNames.foldIndexed<Map<int, Contact>>({}, (index, contacts, name) {
+  /// To use huge list of 5000 users comment out the following :
+  if (index > 50) {
+    return contacts;
+  }
+  contacts.putIfAbsent(index,
+      () => Contact(id: index, name: name, avatarUrl: contactAvatars[index]));
+  return contacts;
+});
+
+var sortedContactIds = contacts.values
+    .sorted(((a, b) => a.name.compareTo(b.name)))
+    .map((e) => e.id)
+    .toList();

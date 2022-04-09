@@ -1,17 +1,18 @@
-import 'package:aboutyou/data/contacts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aboutyou/logic/models/contact.dart';
+
 class ContactDetailsPage extends StatelessWidget {
-  static Route route(int contactIndex) {
+  static Route route(Contact contact) {
     return CupertinoPageRoute(
-        builder: (_) => ContactDetailsPage(contactIndex: contactIndex));
+        builder: (_) => ContactDetailsPage(contact: contact));
   }
 
-  final int contactIndex;
+  final Contact contact;
 
   const ContactDetailsPage({
-    required this.contactIndex,
+    required this.contact,
     Key? key,
   }) : super(key: key);
 
@@ -19,7 +20,7 @@ class ContactDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(contacts[contactIndex]),
+        title: Text(contact.name),
       ),
       body: SafeArea(
         child: Column(
@@ -30,7 +31,7 @@ class ContactDetailsPage extends StatelessWidget {
               child: CircleAvatar(
                 radius: 100,
                 backgroundImage:
-                    NetworkImage(avatars[contactIndex] + '?size=300x300'),
+                    NetworkImage(contact.avatarUrl + '?size=300x300'),
                 backgroundColor: Colors.grey.shade700,
               ),
             )

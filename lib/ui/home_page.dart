@@ -1,26 +1,19 @@
-import 'package:aboutyou/data/contacts.dart';
-import 'package:aboutyou/ui/contact_details_page.dart';
+import 'package:aboutyou/ui/components/contact_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'grouped_list_view.dart';
+import 'package:aboutyou/logic/contacts_notifier.dart';
+import 'package:aboutyou/ui/contact_details_page.dart';
+
+import 'components/grouped_list_view.dart';
 
 class HomePage extends HookWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final sortedContacts = useState(<String>[]);
-    final filteredContacts = useState(<String>[]);
-
-    useEffect(() {
-      // To use huge list of 5000 users comment out the following line:
-      contacts = contacts.sublist(0, 50);
-
-      contacts.sort();
-      sortedContacts.value = contacts;
-      filteredContacts.value = contacts;
-    }, []);
+    final contactsNotifier = useMemoized(() => ContactsNotifier());
+    final contactStore = useValueListenable(contactsNotifier);
 
     final textController = useTextEditingController();
     final focusNode = useFocusNode();
@@ -37,11 +30,7 @@ class HomePage extends HookWidget {
 
     useEffect(() {
       filterSearch() {
-        filteredContacts.value = sortedContacts.value
-            .where((contact) => contact
-                .toLowerCase()
-                .contains(textController.text.toLowerCase()))
-            .toList(growable: false);
+        contactsNotifier.filterContacts(textController.text);
       }
 
       textController.addListener(filterSearch);
@@ -72,29 +61,32 @@ class HomePage extends HookWidget {
                   },
                 )
               ]
-            : null,
+            : [],
       ),
       body: SafeArea(
         child: Scrollbar(
           radius: const Radius.circular(10),
-          child: GroupedListView<String, String>(
+          child: GroupedListView<int, String>(
             needsSorting: false,
-            items: filteredContacts.value,
-            mapToGroup: (String contact) {
-              return contact.characters.first;
+            items: contactStore.sortedContactIds,
+            mapToGroup: (contactId) {
+              return contactStore.contacts[contactId]!.name.characters.first;
             },
-            itemBuilder: (BuildContext context, String contact, int index) {
-              return ListTile(
+            itemBuilder: (BuildContext context, int contactId, int index) {
+              final contact = contactStore.contacts[contactId]!;
+              return ContactListItem(
+                contact: contact,
+                isPinned: contact.isPinned,
                 onTap: () {
-                  Navigator.of(context).push(ContactDetailsPage.route(index));
+                  Navigator.of(context).push(ContactDetailsPage.route(contact));
                 },
-                title: Text(contact),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.grey.shade700,
-                  backgroundImage: NetworkImage(
-                    avatars[index] + '?size=100x100',
-                  ),
-                ),
+                onPinTap: () {
+                  if (contact.isPinned) {
+                    contactsNotifier.unpinContact(contact);
+                  } else {
+                    contactsNotifier.pinContact(contact);
+                  }
+                },
               );
             },
             groupHeaderBuilder: (BuildContext context, group, _) {
@@ -103,10 +95,10 @@ class HomePage extends HookWidget {
               );
             },
             preceedingWidgets: searchIsActive.value
-                ? filteredContacts.value.isEmpty
+                ? contactStore.contacts.isEmpty
                     ? [
                         const ListTile(
-                          title: Text('No contacts found'),
+                          title: Text('No contact found'),
                         ),
                       ]
                     : null
@@ -117,16 +109,38 @@ class HomePage extends HookWidget {
                       leading:
                           const CircleAvatar(child: Icon(Icons.person_add)),
                     ),
-                    ListTile(
-                      onTap: () {},
-                      title: const Text('Pin contact'),
-                      leading:
-                          const CircleAvatar(child: Icon(Icons.person_pin)),
-                    ),
+                    const Divider(),
+                    ...(contactStore.pinnedContactIds.isEmpty
+                        ? []
+                        : [
+                            ...contactStore.pinnedContactIds.map(
+                              (contactId) {
+                                final contact =
+                                    contactStore.contacts[contactId]!;
+                                return ContactListItem(
+                                  contact: contact,
+                                  isPinned: contact.isPinned,
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        ContactDetailsPage.route(contact));
+                                  },
+                                  onPinTap: () {
+                                    if (contact.isPinned) {
+                                      contactsNotifier.unpinContact(contact);
+                                    } else {
+                                      contactsNotifier.pinContact(contact);
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                            const Divider(),
+                          ])
                   ],
             succeedingWidgets: searchIsActive.value
                 ? null
                 : [
+                    const Divider(),
                     ListTile(
                       onTap: () {},
                       title: const Text('Backup all contacts'),
